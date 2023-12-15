@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="day 11 - run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-    <option name="command" value="run --package day-11 --bin day-11" />
+    <option name="command" value="run --release --package day-11 --bin day-11" />
     <option name="workingDirectory" value="file://$PROJECT_DIR$" />
     <option name="emulateTerminal" value="false" />
     <option name="channel" value="DEFAULT" />
