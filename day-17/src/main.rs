@@ -1,7 +1,8 @@
 use std::cmp::Ordering;
-use std::collections::{BinaryHeap, HashSet};
+use std::collections::BinaryHeap;
 use std::hash::{Hash, Hasher};
 use std::io::stdin;
+use std::time::Instant;
 
 struct Statement {
     width: usize,
@@ -31,10 +32,7 @@ const DIRECTION: [(isize, isize); 4] = [(0, 1), (1, 0), (0, -1), (-1, 0)];
 impl Ord for State {
     fn cmp(&self, other: &Self) -> Ordering {
         // Reversed for min heap
-        other
-            .cost
-            .cmp(&self.cost)
-            .then(self.straight_count.cmp(&other.straight_count))
+        other.cost.cmp(&self.cost)
     }
 }
 
@@ -62,8 +60,12 @@ fn parse_input() -> Statement {
 fn main() {
     let statement = parse_input();
 
+    let start_time = Instant::now();
     solve_part_1(&statement);
+    eprintln!("{} ms", (Instant::now() - start_time).as_millis());
+    let start_time = Instant::now();
     solve_part_2(&statement);
+    eprintln!("{} ms", (Instant::now() - start_time).as_millis());
 }
 
 fn solve_part_1(statement: &Statement) {
@@ -107,7 +109,6 @@ fn find_min_heat(
     max_straight: isize,
 ) -> Option<usize> {
     let mut costs = vec![usize::MAX; statement.width * statement.height * 4];
-    let mut visited = HashSet::new();
     let mut heap = BinaryHeap::new();
 
     costs[0] = 0;
@@ -121,10 +122,9 @@ fn find_min_heat(
             return Some(state.cost);
         }
 
-        if visited.contains(&state) {
+        if state.cost > costs[state.y * statement.width * 4 + state.x * 4 + state.direction] {
             continue;
         }
-        visited.insert(state);
 
         for dir_new in 0..4 {
             if state.direction == dir_new || state.direction == (dir_new + 2) % 4 {
